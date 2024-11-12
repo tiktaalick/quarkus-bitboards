@@ -113,19 +113,23 @@ public class BoardGeneration {
         chessBoard[7][index] = "Q";
 
         // Step 4a: Zet de eerste paarden ergens neer
-        int random4a = (int) (Math.random() * 5);
-        index = 0;
-        while (!" ".equals(chessBoard[0][index]) || index - 1 < random4a) {
+        index = (int) (Math.random() * 8);
+        while (!" ".equals(chessBoard[0][index])) {
             index++;
+            if(index > 7) {
+                index = 0;
+            }
         }
         chessBoard[0][index] = "n";
         chessBoard[7][index] = "N";
 
         // Step 4b: Zet de tweede paarden ergens neer
-        int random4b = (int) (Math.random() * 4);
-        index = 0;
-        while (!" ".equals(chessBoard[0][index]) || index - 1 < random4a) {
+        index = (int) (Math.random() * 8);
+        while (!" ".equals(chessBoard[0][index])) {
             index++;
+            if(index > 7) {
+                index = 0;
+            }
         }
         chessBoard[0][index] = "n";
         chessBoard[7][index] = "N";
