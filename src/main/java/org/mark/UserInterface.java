@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.List;
 
 public class UserInterface extends JPanel {
 
@@ -54,7 +55,19 @@ public class UserInterface extends JPanel {
     }
 
     public static void newGame() {
-        BoardGeneration.initiateChess960();
+        List<Long> bitBoards = BoardGeneration.initiateStandardChess();
+        WR = bitBoards.get(0);
+        WN = bitBoards.get(1);
+        WB = bitBoards.get(2);
+        WQ = bitBoards.get(3);
+        WK = bitBoards.get(4);
+        WP = bitBoards.get(5);
+        BR = bitBoards.get(6);
+        BN = bitBoards.get(7);
+        BB = bitBoards.get(8);
+        BQ = bitBoards.get(9);
+        BK = bitBoards.get(10);
+        BP = bitBoards.get(11);
     }
 
     public void drawBoard(Graphics g) {
@@ -89,8 +102,8 @@ public class UserInterface extends JPanel {
     }
 
     public void drawPieces(Graphics g) {
-        Image chessPieceImage = null;
         for (int i = 0; i < 64; i++) {
+            Image chessPieceImage = null;
             if (((WP >> i) & 1) == 1) {
                 chessPieceImage = IconFactory.getIcon("white", "pawn");
             } else if (((WB >> i) & 1) == 1) {
@@ -119,8 +132,8 @@ public class UserInterface extends JPanel {
             g.drawImage(chessPieceImage,
                     (int) ((i % 8) * squareSize) + border,
                     (int) ((i / 8) * squareSize) + border,
-                    (int) ((i % 8 + 1) * squareSize),
-                    (int) ((i % 8 + 1) * squareSize),
+                    (int) (squareSize),
+                    (int) (squareSize),
                     this);
         }
     }

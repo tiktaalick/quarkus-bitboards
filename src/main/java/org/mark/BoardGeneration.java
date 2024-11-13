@@ -1,15 +1,11 @@
 package org.mark;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Arrays;
+import java.util.List;
 
 public class BoardGeneration {
 
-    private static final Logger log = LoggerFactory.getLogger(BoardGeneration.class);
-
-    public static void arrayToBitboards(String[][] chessBoard,
+    public static List<Long> arrayToBitboards(String[][] chessBoard,
             long WP,
             long WN,
             long WB,
@@ -66,9 +62,10 @@ public class BoardGeneration {
             }
         }
         drawArray(WP, WN, WB, WR, WQ, WK, BP, BN, BB, BR, BQ, BK);
+        return List.of(WR,WN,WB,WQ,WK,WP,BR,BN,BB,BQ,BK,BP);
     }
 
-    public static void initiateChess960() {
+    public static List<Long> initiateChess960() {
         long WP = 0L;
         long WN = 0L;
         long WB = 0L;
@@ -158,10 +155,10 @@ public class BoardGeneration {
         chessBoard[0][index] = "r";
         chessBoard[7][index] = "R";
 
-        arrayToBitboards(chessBoard, WP, WN, WB, WR, WQ, WK, BP, BN, BB, BR, BQ, BK);
+        return arrayToBitboards(chessBoard, WP, WN, WB, WR, WQ, WK, BP, BN, BB, BR, BQ, BK);
     }
 
-    public static void initiateStandardChess() {
+    public static List<Long> initiateStandardChess() {
         long WP = 0L;
         long WN = 0L;
         long WB = 0L;
@@ -184,7 +181,8 @@ public class BoardGeneration {
                 {"P", "P", "P", "P", "P", "P", "P", "P"},
                 {"R", "N", "B", "Q", "K", "B", "N", "R"}
         };
-        arrayToBitboards(chessBoard, WP, WN, WB, WR, WQ, WK, BP, BN, BB, BR, BQ, BK);
+
+        return arrayToBitboards(chessBoard, WP, WN, WB, WR, WQ, WK, BP, BN, BB, BR, BQ, BK);
     }
 
     private static long convertStringToBitboard(String binary) {
