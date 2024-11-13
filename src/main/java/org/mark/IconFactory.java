@@ -28,8 +28,6 @@ public final class IconFactory {
     }
 
     public static Image getIcon(String playerColor, String pieceType) {
-        System.out.printf("playerColor=%s; pieceType=%s", playerColor, pieceType);
-
         if (playerColor == null || pieceType == null) {
             return null;
         }
