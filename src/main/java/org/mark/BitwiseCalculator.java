@@ -3,28 +3,30 @@ package org.mark;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 public class BitwiseCalculator {
 
-    private static final String       AND                = "&";
-    private static final String       DASH               = "-";
-    private static final String       EMPTY              = "";
-    private static final String       EXIT               = "exit";
-    private static final String       LEFT_SHIFT         = "<<";
-    private static final String       NOT                = "~";
-    private static final int          NUMBER_OF_OPERANDS = 2;
-    private static final String       OR                 = "|";
-    private static final String       PADDING            = "0";
-    private static final String       REPLACEMENT        = "#";
-    private static final String       RIGHT_SHIFT        = ">>";
-    private static final String       SPACE              = " ";
-    private static final String       XOR                = "^";
-    private static final List<String> OPERATORS          = List.of(AND, OR, XOR, LEFT_SHIFT, RIGHT_SHIFT, NOT);
+    private static final String       ADD         = "+";
+    private static final String       AND         = "&";
+    private static final String       DIVIDE      = "/";
+    private static final String       EXIT        = "exit";
+    private static final String       LEFT_SHIFT  = "<<";
+    private static final String       MULTIPLY    = "*";
+    private static final String       NEW_LINE    = "\n";
+    private static final String       NOT         = "~";
+    private static final String       OR          = "|";
+    private static final String       PADDING     = "0";
+    private static final String       RIGHT_SHIFT = ">>";
+    private static final String       SPACE       = " ";
+    private static final String       SUBTRACT    = "-";
+    private static final String       DASH        = SUBTRACT;
+    private static final String       XOR         = "^";
+    private static final List<String> OPERATORS   = List.of(AND, OR, XOR, LEFT_SHIFT, RIGHT_SHIFT, NOT, ADD, SUBTRACT, MULTIPLY, DIVIDE);
 
     public static void main(String[] args) {
         String operation;
@@ -42,7 +44,7 @@ public class BitwiseCalculator {
                     print(decimals, calculation);
                 }
                 catch (IllegalArgumentException e) {
-                    System.out.println(e.getMessage());
+                    System.out.println(e.getMessage() + NEW_LINE);
                 }
             } else {
                 break;
@@ -60,7 +62,11 @@ public class BitwiseCalculator {
             case XOR -> decimalResult = decimals.firstDecimal ^ decimals.secondDecimal;
             case LEFT_SHIFT -> decimalResult = decimals.firstDecimal << decimals.secondDecimal;
             case RIGHT_SHIFT -> decimalResult = decimals.firstDecimal >> decimals.secondDecimal;
-            default -> throw new IllegalArgumentException("Unsupported operation.");
+            case ADD -> decimalResult = decimals.firstDecimal + decimals.secondDecimal;
+            case SUBTRACT -> decimalResult = decimals.firstDecimal - decimals.secondDecimal;
+            case MULTIPLY -> decimalResult = decimals.firstDecimal * decimals.secondDecimal;
+            case DIVIDE -> decimalResult = decimals.firstDecimal / decimals.secondDecimal;
+            default -> throw new IllegalArgumentException("Operator " + decimals.operator + " is unsupported.");
         }
 
         return decimalResult;
@@ -81,23 +87,24 @@ public class BitwiseCalculator {
     }
 
     private static Decimal extractNumbers(String operation) {
-        String operator = OPERATORS.stream().filter(operation::contains).findAny().orElse(EMPTY);
+        var allNonOperands = operation
+                .chars()
+                .mapToObj(Character::toString)
+                .filter(character -> !character.equals(SPACE) && !StringUtils.isNumeric(character));
 
-        String[] decimalArray = operation
-                .replace(SPACE, EMPTY)
-                .replace(operator, REPLACEMENT)
-                .split(REPLACEMENT);
+        var operator = OPERATORS.stream().filter(operation::contains).findAny().orElse(allNonOperands.findAny().orElse(operation));
 
-        if (decimalArray.length == NUMBER_OF_OPERANDS) {
-            return new Decimal(parseLong(decimalArray[0]), parseLong(decimalArray[1]), operator);
-        } else {
-            throw new IllegalArgumentException("Please provide one valid operator.");
-        }
+        int index = operation.lastIndexOf(operator);
+
+        String firstOperand = StringUtils.isNumeric(operator) ? operator : operation.substring(0, index).trim();
+        String secondOperand = StringUtils.isNumeric(operator) ? EMPTY : operation.substring(index + operator.length()).trim();
+
+        return new Decimal(parseLong(firstOperand), parseLong(secondOperand), StringUtils.isNumeric(operator) ? ADD : operator);
     }
 
     private static long parseLong(String decimal) {
         try {
-            return Long.parseLong(decimal);
+            return decimal.isEmpty() ? 0L : Long.parseLong(decimal);
         }
         catch (NumberFormatException e) {
             throw new IllegalArgumentException(decimal + (!isNumeric(decimal) ? " is not a valid number." : " is too large."));
@@ -107,14 +114,12 @@ public class BitwiseCalculator {
     private static void print(Decimal decimal, long decimalResult) {
         var binary = createBinary(decimal, decimalResult);
 
-        if (!Objects.equals(decimal.operator, NOT)) {
+        if (!List.of(decimal.firstDecimal, decimal.secondDecimal).contains(0L)) {
             System.out.println(StringUtils.leftPad(binary.firstBinary, binary.maxLength, PADDING) + SPACE + decimal.firstDecimal);
+            System.out.println(StringUtils.leftPad(binary.secondBinary, binary.maxLength, PADDING) + SPACE + decimal.secondDecimal);
+            System.out.println(StringUtils.leftPad(DASH, binary.maxLength, DASH) + SPACE + decimal.operator());
         }
-
-        System.out.println(StringUtils.leftPad(binary.secondBinary, binary.maxLength, PADDING) + SPACE + decimal.secondDecimal);
-        System.out.println(StringUtils.leftPad(DASH, binary.maxLength, DASH) + SPACE + decimal.operator());
-        System.out.println(StringUtils.leftPad(binary.binaryResult, binary.maxLength, PADDING) + SPACE + decimalResult);
-        System.out.println();
+        System.out.println(StringUtils.leftPad(binary.binaryResult, binary.maxLength, PADDING) + SPACE + decimalResult + NEW_LINE);
     }
 
     private record Binary(
