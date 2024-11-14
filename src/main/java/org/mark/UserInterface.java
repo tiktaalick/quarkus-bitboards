@@ -68,6 +68,7 @@ public class UserInterface extends JPanel {
         BQ = bitBoards.get(9);
         BK = bitBoards.get(10);
         BP = bitBoards.get(11);
+        Moves.possibleMovesWhite("",WR,WN,WB,WQ,WK,WP,BR,BN,BB,BQ,BK,BP);
     }
 
     public void drawBoard(Graphics g) {

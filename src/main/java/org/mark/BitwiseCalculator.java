@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -18,6 +19,7 @@ public class BitwiseCalculator {
     private static final String       EXIT                   = "exit";
     private static final String       LEFT_SHIFT             = "<<";
     private static final String       LOGICAL_RIGHT_SHIFT    = ">>>";
+    private static final int          MAX_LONG_DIGITS        = 64;
     private static final String       MULTIPLY               = "*";
     private static final String       NEW_LINE               = "\n";
     private static final String       NOT                    = "~";
@@ -28,13 +30,13 @@ public class BitwiseCalculator {
     private static final String       DASH                   = SUBTRACT;
     private static final String       XOR                    = "^";
     private static final List<String> OPERATORS              = List.of(
-            NOT,
             XOR,
             OR,
             AND,
             LEFT_SHIFT,
             LOGICAL_RIGHT_SHIFT,
             ARITHMETIC_RIGHT_SHIFT,
+            NOT,
             SUBTRACT,
             ADD,
             DIVIDE,
@@ -144,11 +146,20 @@ public class BitwiseCalculator {
 
     private static void print(Result result) {
         var binary = createBinary(result);
+        var binaries = List.of(StringUtils.leftPad(binary.firstBinary, binary.maxLength, PADDING), SPACE + result.operation.firstDecimal + NEW_LINE,
+                StringUtils.leftPad(binary.secondBinary, binary.maxLength, PADDING), SPACE + result.operation.secondDecimal + NEW_LINE,
+                StringUtils.leftPad(DASH, binary.maxLength, DASH), SPACE + result.operation.operator() + NEW_LINE,
+                StringUtils.leftPad(binary.binaryResult, binary.maxLength, PADDING), SPACE + result.decimalResult + NEW_LINE + NEW_LINE);
 
-        System.out.println(StringUtils.leftPad(binary.firstBinary, binary.maxLength, PADDING) + SPACE + result.operation.firstDecimal);
-        System.out.println(StringUtils.leftPad(binary.secondBinary, binary.maxLength, PADDING) + SPACE + result.operation.secondDecimal);
-        System.out.println(StringUtils.leftPad(DASH, binary.maxLength, DASH) + SPACE + result.operation.operator());
-        System.out.println(StringUtils.leftPad(binary.binaryResult, binary.maxLength, PADDING) + SPACE + result.decimalResult + NEW_LINE);
+        IntStream.range(0, binaries.size()).forEach(index -> printLine(index, binaries));
+    }
+
+    private static void printLine(int index, List<String> binaries) {
+        if(index % 2 == 0) {
+            System.out.print(StringUtils.leftPad(binaries.get(index), MAX_LONG_DIGITS));
+        } else {
+            System.out.print(binaries.get(index));
+        }
     }
 
     private record Binary(
