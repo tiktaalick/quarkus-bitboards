@@ -11,22 +11,24 @@ import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 public class BitwiseCalculator {
 
-    private static final String       ADD         = "+";
-    private static final String       AND         = "&";
-    private static final String       DIVIDE      = "/";
-    private static final String       EXIT        = "exit";
-    private static final String       LEFT_SHIFT  = "<<";
-    private static final String       MULTIPLY    = "*";
-    private static final String       NEW_LINE    = "\n";
-    private static final String       NOT         = "~";
-    private static final String       OR          = "|";
-    private static final String       PADDING     = "0";
-    private static final String       RIGHT_SHIFT = ">>";
-    private static final String       SPACE       = " ";
-    private static final String       SUBTRACT    = "-";
-    private static final String       DASH        = SUBTRACT;
-    private static final String       XOR         = "^";
-    private static final List<String> OPERATORS   = List.of(AND, OR, XOR, LEFT_SHIFT, RIGHT_SHIFT, NOT, ADD, SUBTRACT, MULTIPLY, DIVIDE);
+    private static final String       ADD                    = "+";
+    private static final String       AND                    = "&";
+    private static final String       ARITHMETIC_RIGHT_SHIFT = ">>";
+    private static final String       DIVIDE                 = "/";
+    private static final String       EXIT                   = "exit";
+    private static final String       LEFT_SHIFT             = "<<";
+    private static final String       LOGICAL_RIGHT_SHIFT    = ">>>";
+    private static final String       MULTIPLY               = "*";
+    private static final String       NEW_LINE               = "\n";
+    private static final String       NOT                    = "~";
+    private static final String       OR                     = "|";
+    private static final String       PADDING                = "0";
+    private static final String       SPACE                  = " ";
+    private static final String       SUBTRACT               = "-";
+    private static final String       DASH                   = SUBTRACT;
+    private static final String       XOR                    = "^";
+    private static final List<String> OPERATORS              = List.of(AND, OR, XOR, LEFT_SHIFT,
+            LOGICAL_RIGHT_SHIFT, ARITHMETIC_RIGHT_SHIFT, NOT, ADD, SUBTRACT, MULTIPLY, DIVIDE);
 
     public static void main(String[] args) {
         String operation;
@@ -61,7 +63,8 @@ public class BitwiseCalculator {
             case OR -> decimalResult = decimals.firstDecimal | decimals.secondDecimal;
             case XOR -> decimalResult = decimals.firstDecimal ^ decimals.secondDecimal;
             case LEFT_SHIFT -> decimalResult = decimals.firstDecimal << decimals.secondDecimal;
-            case RIGHT_SHIFT -> decimalResult = decimals.firstDecimal >> decimals.secondDecimal;
+            case ARITHMETIC_RIGHT_SHIFT -> decimalResult = decimals.firstDecimal >> decimals.secondDecimal;
+            case LOGICAL_RIGHT_SHIFT -> decimalResult = decimals.firstDecimal >>> decimals.secondDecimal;
             case ADD -> decimalResult = decimals.firstDecimal + decimals.secondDecimal;
             case SUBTRACT -> decimalResult = decimals.firstDecimal - decimals.secondDecimal;
             case MULTIPLY -> decimalResult = decimals.firstDecimal * decimals.secondDecimal;
