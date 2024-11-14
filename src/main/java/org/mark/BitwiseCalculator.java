@@ -27,23 +27,32 @@ public class BitwiseCalculator {
     private static final String       SUBTRACT               = "-";
     private static final String       DASH                   = SUBTRACT;
     private static final String       XOR                    = "^";
-    private static final List<String> OPERATORS              = List.of(AND, OR, XOR, LEFT_SHIFT,
-            LOGICAL_RIGHT_SHIFT, ARITHMETIC_RIGHT_SHIFT, NOT, ADD, SUBTRACT, MULTIPLY, DIVIDE);
+    private static final List<String> OPERATORS              = List.of(
+            NOT,
+            XOR,
+            OR,
+            AND,
+            LEFT_SHIFT,
+            LOGICAL_RIGHT_SHIFT,
+            ARITHMETIC_RIGHT_SHIFT,
+            SUBTRACT,
+            ADD,
+            DIVIDE,
+            MULTIPLY
+    );
 
     public static void main(String[] args) {
-        String operation;
+        String userInput;
         var consoleInput = new Scanner(System.in);
 
         System.out.println("Please enter bitwise operations:");
 
         while (true) {
-            operation = consoleInput.nextLine();
+            userInput = consoleInput.nextLine();
 
-            if (!operation.contains(EXIT)) {
+            if (!userInput.contains(EXIT)) {
                 try {
-                    var decimals = extractNumbers(operation);
-                    var calculation = calculate(decimals);
-                    print(decimals, calculation);
+                    print(calculate(createOperation(userInput)));
                 }
                 catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage() + NEW_LINE);
@@ -54,31 +63,31 @@ public class BitwiseCalculator {
         }
     }
 
-    private static long calculate(Decimal decimals) {
+    private static Result calculate(Operation operation) {
         long decimalResult;
 
-        switch (decimals.operator) {
-            case NOT -> decimalResult = ~decimals.secondDecimal;
-            case AND -> decimalResult = decimals.firstDecimal & decimals.secondDecimal;
-            case OR -> decimalResult = decimals.firstDecimal | decimals.secondDecimal;
-            case XOR -> decimalResult = decimals.firstDecimal ^ decimals.secondDecimal;
-            case LEFT_SHIFT -> decimalResult = decimals.firstDecimal << decimals.secondDecimal;
-            case ARITHMETIC_RIGHT_SHIFT -> decimalResult = decimals.firstDecimal >> decimals.secondDecimal;
-            case LOGICAL_RIGHT_SHIFT -> decimalResult = decimals.firstDecimal >>> decimals.secondDecimal;
-            case ADD -> decimalResult = decimals.firstDecimal + decimals.secondDecimal;
-            case SUBTRACT -> decimalResult = decimals.firstDecimal - decimals.secondDecimal;
-            case MULTIPLY -> decimalResult = decimals.firstDecimal * decimals.secondDecimal;
-            case DIVIDE -> decimalResult = decimals.firstDecimal / decimals.secondDecimal;
-            default -> throw new IllegalArgumentException("Operator " + decimals.operator + " is unsupported.");
+        switch (operation.operator) {
+            case NOT -> decimalResult = ~operation.secondDecimal;
+            case AND -> decimalResult = operation.firstDecimal & operation.secondDecimal;
+            case OR -> decimalResult = operation.firstDecimal | operation.secondDecimal;
+            case XOR -> decimalResult = operation.firstDecimal ^ operation.secondDecimal;
+            case LEFT_SHIFT -> decimalResult = operation.firstDecimal << operation.secondDecimal;
+            case ARITHMETIC_RIGHT_SHIFT -> decimalResult = operation.firstDecimal >> operation.secondDecimal;
+            case LOGICAL_RIGHT_SHIFT -> decimalResult = operation.firstDecimal >>> operation.secondDecimal;
+            case ADD -> decimalResult = operation.firstDecimal + operation.secondDecimal;
+            case SUBTRACT -> decimalResult = operation.firstDecimal - operation.secondDecimal;
+            case MULTIPLY -> decimalResult = operation.firstDecimal * operation.secondDecimal;
+            case DIVIDE -> decimalResult = operation.firstDecimal / operation.secondDecimal;
+            default -> throw new IllegalArgumentException("Operator " + operation.operator + " is unsupported.");
         }
 
-        return decimalResult;
+        return new Result(operation, decimalResult);
     }
 
-    private static Binary createBinary(Decimal decimal, long decimalResult) {
-        var firstBinary = Long.toBinaryString(decimal.firstDecimal);
-        var secondBinary = Long.toBinaryString(decimal.secondDecimal);
-        var binaryResult = Long.toBinaryString(decimalResult);
+    private static Binary createBinary(Result result) {
+        var firstBinary = Long.toBinaryString(result.operation.firstDecimal);
+        var secondBinary = Long.toBinaryString(result.operation.secondDecimal);
+        var binaryResult = Long.toBinaryString(result.decimalResult);
 
         int maxLength = Stream
                 .of(firstBinary, secondBinary, binaryResult)
@@ -89,20 +98,39 @@ public class BitwiseCalculator {
         return new Binary(firstBinary, secondBinary, binaryResult, maxLength);
     }
 
-    private static Decimal extractNumbers(String operation) {
-        var allNonOperands = operation
+    private static Operation createOperation(String userInput) {
+        var allNonOperands = userInput
                 .chars()
                 .mapToObj(Character::toString)
-                .filter(character -> !character.equals(SPACE) && !StringUtils.isNumeric(character));
+                .filter(character -> !character.equals(SPACE) && !isNumeric(character));
 
-        var operator = OPERATORS.stream().filter(operation::contains).findAny().orElse(allNonOperands.findAny().orElse(operation));
+        var operator = OPERATORS.stream().filter(userInput::contains).findAny().orElse(allNonOperands.findAny().orElse(userInput));
 
-        int index = operation.lastIndexOf(operator);
+        int operatorIndex = userInput.lastIndexOf(operator);
 
-        String firstOperand = StringUtils.isNumeric(operator) ? operator : operation.substring(0, index).trim();
-        String secondOperand = StringUtils.isNumeric(operator) ? EMPTY : operation.substring(index + operator.length()).trim();
+        String firstOperand = makeNumeric(isNumeric(operator) ? operator : userInput.substring(0, operatorIndex).trim());
+        String secondOperand = makeNumeric(isNumeric(operator) ? EMPTY : userInput.substring(operatorIndex + operator.length()).trim());
 
-        return new Decimal(parseLong(firstOperand), parseLong(secondOperand), StringUtils.isNumeric(operator) ? ADD : operator);
+        return new Operation(parseLong(firstOperand), parseLong(secondOperand), isNumeric(operator) ? ADD : operator);
+    }
+
+    private static String makeNumeric(String operand) {
+        String numericOperand;
+
+        if (operand.equals(EMPTY)) {
+            numericOperand = "0";
+        } else {
+            try {
+                numericOperand = String.valueOf(parseLong(operand));
+            }
+            catch (IllegalArgumentException e) {
+                var result = calculate(createOperation(operand));
+                numericOperand = String.valueOf(result.decimalResult());
+                print(result);
+            }
+        }
+
+        return numericOperand;
     }
 
     private static long parseLong(String decimal) {
@@ -114,15 +142,13 @@ public class BitwiseCalculator {
         }
     }
 
-    private static void print(Decimal decimal, long decimalResult) {
-        var binary = createBinary(decimal, decimalResult);
+    private static void print(Result result) {
+        var binary = createBinary(result);
 
-        if (!List.of(decimal.firstDecimal, decimal.secondDecimal).contains(0L)) {
-            System.out.println(StringUtils.leftPad(binary.firstBinary, binary.maxLength, PADDING) + SPACE + decimal.firstDecimal);
-            System.out.println(StringUtils.leftPad(binary.secondBinary, binary.maxLength, PADDING) + SPACE + decimal.secondDecimal);
-            System.out.println(StringUtils.leftPad(DASH, binary.maxLength, DASH) + SPACE + decimal.operator());
-        }
-        System.out.println(StringUtils.leftPad(binary.binaryResult, binary.maxLength, PADDING) + SPACE + decimalResult + NEW_LINE);
+        System.out.println(StringUtils.leftPad(binary.firstBinary, binary.maxLength, PADDING) + SPACE + result.operation.firstDecimal);
+        System.out.println(StringUtils.leftPad(binary.secondBinary, binary.maxLength, PADDING) + SPACE + result.operation.secondDecimal);
+        System.out.println(StringUtils.leftPad(DASH, binary.maxLength, DASH) + SPACE + result.operation.operator());
+        System.out.println(StringUtils.leftPad(binary.binaryResult, binary.maxLength, PADDING) + SPACE + result.decimalResult + NEW_LINE);
     }
 
     private record Binary(
@@ -134,10 +160,16 @@ public class BitwiseCalculator {
 
     }
 
-    private record Decimal(
+    private record Operation(
             long firstDecimal,
             long secondDecimal,
             String operator) {
+
+    }
+
+    private record Result(
+            Operation operation,
+            long decimalResult) {
 
     }
 }
