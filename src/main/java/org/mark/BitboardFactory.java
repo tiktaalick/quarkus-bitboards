@@ -115,51 +115,56 @@ public class BitboardFactory {
     }
 
     public static Long[] createDecimalsFromBitboards(String[] bitboards) {
-        Long[] decimals = Stream.of(bitboards)
-                                .map(BitboardFactory::getDecimalValueFromBitboard)
-                                .toArray(value -> new Long[Material.values().length]);
+        var decimals = Stream.of(bitboards)
+                             .map(BitboardFactory::getDecimalValueFromBitboard)
+                             .collect(Collectors.toList());
 
-        decimals[NO_WHITE_MATERIAL_NO_BLACK_KING.ordinal()] = ~(decimals[WHITE_PAWN.ordinal()] |
-                decimals[WHITE_ROOK.ordinal()] |
-                decimals[WHITE_KNIGHT.ordinal()] |
-                decimals[WHITE_BISHOP.ordinal()] |
-                decimals[WHITE_QUEEN.ordinal()] |
-                decimals[WHITE_KING.ordinal()] |
-                decimals[BLACK_KING.ordinal()]);
+        decimals.add(NO_WHITE_MATERIAL_NO_BLACK_KING.ordinal(),
+                ~(decimals.get(WHITE_PAWN.ordinal()) |
+                        decimals.get(WHITE_ROOK.ordinal()) |
+                        decimals.get(WHITE_KNIGHT.ordinal()) |
+                        decimals.get(WHITE_BISHOP.ordinal()) |
+                        decimals.get(WHITE_QUEEN.ordinal()) |
+                        decimals.get(WHITE_KING.ordinal()) |
+                        decimals.get(BLACK_KING.ordinal())));
 
-        decimals[NO_BLACK_MATERIAL_NO_WHITE_KING.ordinal()] = ~(decimals[BLACK_PAWN.ordinal()] |
-                decimals[BLACK_ROOK.ordinal()] |
-                decimals[BLACK_KNIGHT.ordinal()] |
-                decimals[BLACK_BISHOP.ordinal()] |
-                decimals[BLACK_QUEEN.ordinal()] |
-                decimals[BLACK_KING.ordinal()] |
-                decimals[WHITE_KING.ordinal()]);
+        decimals.add(NO_BLACK_MATERIAL_NO_WHITE_KING.ordinal(),
+                ~(decimals.get(BLACK_PAWN.ordinal()) |
+                        decimals.get(BLACK_ROOK.ordinal()) |
+                        decimals.get(BLACK_KNIGHT.ordinal()) |
+                        decimals.get(BLACK_BISHOP.ordinal()) |
+                        decimals.get(BLACK_QUEEN.ordinal()) |
+                        decimals.get(BLACK_KING.ordinal()) |
+                        decimals.get(WHITE_KING.ordinal())));
 
-        decimals[WHITE_MATERIAL_TO_CAPTURE.ordinal()] = decimals[WHITE_PAWN.ordinal()] |
-                decimals[WHITE_ROOK.ordinal()] |
-                decimals[WHITE_KNIGHT.ordinal()] |
-                decimals[WHITE_BISHOP.ordinal()] |
-                decimals[WHITE_QUEEN.ordinal()];
+        decimals.add(WHITE_MATERIAL_TO_CAPTURE.ordinal(),
+                decimals.get(WHITE_PAWN.ordinal()) |
+                        decimals.get(WHITE_ROOK.ordinal()) |
+                        decimals.get(WHITE_KNIGHT.ordinal()) |
+                        decimals.get(WHITE_BISHOP.ordinal()) |
+                        decimals.get(WHITE_QUEEN.ordinal()));
 
-        decimals[BLACK_MATERIAL_TO_CAPTURE.ordinal()] = decimals[BLACK_PAWN.ordinal()] |
-                decimals[BLACK_ROOK.ordinal()] |
-                decimals[BLACK_KNIGHT.ordinal()] |
-                decimals[BLACK_BISHOP.ordinal()] |
-                decimals[BLACK_QUEEN.ordinal()];
+        decimals.add(BLACK_MATERIAL_TO_CAPTURE.ordinal(),
+                decimals.get(BLACK_PAWN.ordinal()) |
+                        decimals.get(BLACK_ROOK.ordinal()) |
+                        decimals.get(BLACK_KNIGHT.ordinal()) |
+                        decimals.get(BLACK_BISHOP.ordinal()) |
+                        decimals.get(BLACK_QUEEN.ordinal()));
 
-        decimals[EMPTY_SQUARES.ordinal()] = ~(decimals[WHITE_PAWN.ordinal()] |
-                decimals[WHITE_ROOK.ordinal()] |
-                decimals[WHITE_KNIGHT.ordinal()] |
-                decimals[WHITE_BISHOP.ordinal()] |
-                decimals[WHITE_QUEEN.ordinal()] |
-                decimals[WHITE_KING.ordinal()] |
-                decimals[BLACK_PAWN.ordinal()] |
-                decimals[BLACK_ROOK.ordinal()] |
-                decimals[BLACK_KNIGHT.ordinal()] |
-                decimals[BLACK_BISHOP.ordinal()] |
-                decimals[BLACK_QUEEN.ordinal()]);
+        decimals.add(EMPTY_SQUARES.ordinal(),
+                ~(decimals.get(WHITE_PAWN.ordinal()) |
+                        decimals.get(WHITE_ROOK.ordinal()) |
+                        decimals.get(WHITE_KNIGHT.ordinal()) |
+                        decimals.get(WHITE_BISHOP.ordinal()) |
+                        decimals.get(WHITE_QUEEN.ordinal()) |
+                        decimals.get(WHITE_KING.ordinal()) |
+                        decimals.get(BLACK_PAWN.ordinal()) |
+                        decimals.get(BLACK_ROOK.ordinal()) |
+                        decimals.get(BLACK_KNIGHT.ordinal()) |
+                        decimals.get(BLACK_BISHOP.ordinal()) |
+                        decimals.get(BLACK_QUEEN.ordinal())));
 
-        return decimals;
+        return decimals.toArray(new Long[0]);
     }
 
     private static long getDecimalValueFromBitboard(String bitboard) {

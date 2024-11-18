@@ -85,7 +85,7 @@ public class Moves {
         String binaryStringTarget = createBinaryStringFromBoard(bitboardTarget);
 
         return IntStream.rangeClosed(binaryStringTarget.indexOf("1"), binaryStringTarget.lastIndexOf("1"))
-                        .filter(index -> binaryStringTarget.charAt(index) == '1')
+                        .filter(index -> index >= 0 && binaryStringTarget.charAt(index) == '1')
                         .mapToObj(index -> createCoordinates(index + move) + (createCoordinates(index)))
                         .collect(Collectors.joining());
     }
