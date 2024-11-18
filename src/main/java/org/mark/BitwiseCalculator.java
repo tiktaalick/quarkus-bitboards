@@ -29,8 +29,7 @@ public class BitwiseCalculator {
     private static final String       SUBTRACT               = "-";
     private static final String       DASH                   = SUBTRACT;
     private static final String       XOR                    = "^";
-    private static final List<String> OPERATORS              = List.of(
-            XOR,
+    private static final List<String> OPERATORS              = List.of(XOR,
             OR,
             AND,
             LEFT_SHIFT,
@@ -40,8 +39,7 @@ public class BitwiseCalculator {
             SUBTRACT,
             ADD,
             DIVIDE,
-            MULTIPLY
-    );
+            MULTIPLY);
 
     public static void main(String[] args) {
         String userInput;
@@ -91,27 +89,35 @@ public class BitwiseCalculator {
         var secondBinary = Long.toBinaryString(result.operation.secondDecimal);
         var binaryResult = Long.toBinaryString(result.decimalResult);
 
-        int maxLength = Stream
-                .of(firstBinary, secondBinary, binaryResult)
-                .map(String::length)
-                .max(Integer::compareTo)
-                .orElse(0);
+        int maxLength = Stream.of(firstBinary, secondBinary, binaryResult)
+                              .map(String::length)
+                              .max(Integer::compareTo)
+                              .orElse(0);
 
         return new Binary(firstBinary, secondBinary, binaryResult, maxLength);
     }
 
     private static Operation createOperation(String userInput) {
-        var allNonOperands = userInput
-                .chars()
-                .mapToObj(Character::toString)
-                .filter(character -> !character.equals(SPACE) && !isNumeric(character));
+        var allNonOperands = userInput.chars()
+                                      .mapToObj(Character::toString)
+                                      .filter(character -> !character.equals(SPACE) && !isNumeric(character));
 
-        var operator = OPERATORS.stream().filter(userInput::contains).findAny().orElse(allNonOperands.findAny().orElse(userInput));
+        var operator = OPERATORS.stream()
+                                .filter(userInput::contains)
+                                .findAny()
+                                .orElse(allNonOperands.findAny()
+                                                      .orElse(userInput));
 
         int operatorIndex = userInput.lastIndexOf(operator);
 
-        String firstOperand = makeNumeric(isNumeric(operator) ? operator : userInput.substring(0, operatorIndex).trim());
-        String secondOperand = makeNumeric(isNumeric(operator) ? EMPTY : userInput.substring(operatorIndex + operator.length()).trim());
+        String firstOperand = makeNumeric(isNumeric(operator)
+                                          ? operator
+                                          : userInput.substring(0, operatorIndex)
+                                                     .trim());
+        String secondOperand = makeNumeric(isNumeric(operator)
+                                           ? EMPTY
+                                           : userInput.substring(operatorIndex + operator.length())
+                                                      .trim());
 
         return new Operation(parseLong(firstOperand), parseLong(secondOperand), isNumeric(operator) ? ADD : operator);
     }
@@ -146,16 +152,21 @@ public class BitwiseCalculator {
 
     private static void print(Result result) {
         var binary = createBinary(result);
-        var binaries = List.of(StringUtils.leftPad(binary.firstBinary, binary.maxLength, PADDING), SPACE + result.operation.firstDecimal + NEW_LINE,
-                StringUtils.leftPad(binary.secondBinary, binary.maxLength, PADDING), SPACE + result.operation.secondDecimal + NEW_LINE,
-                StringUtils.leftPad(DASH, binary.maxLength, DASH), SPACE + result.operation.operator() + NEW_LINE,
-                StringUtils.leftPad(binary.binaryResult, binary.maxLength, PADDING), SPACE + result.decimalResult + NEW_LINE + NEW_LINE);
+        var binaries = List.of(StringUtils.leftPad(binary.firstBinary, binary.maxLength, PADDING),
+                SPACE + result.operation.firstDecimal + NEW_LINE,
+                StringUtils.leftPad(binary.secondBinary, binary.maxLength, PADDING),
+                SPACE + result.operation.secondDecimal + NEW_LINE,
+                StringUtils.leftPad(DASH, binary.maxLength, DASH),
+                SPACE + result.operation.operator() + NEW_LINE,
+                StringUtils.leftPad(binary.binaryResult, binary.maxLength, PADDING),
+                SPACE + result.decimalResult + NEW_LINE + NEW_LINE);
 
-        IntStream.range(0, binaries.size()).forEach(index -> printLine(index, binaries));
+        IntStream.range(0, binaries.size())
+                 .forEach(index -> printLine(index, binaries));
     }
 
     private static void printLine(int index, List<String> binaries) {
-        if(index % 2 == 0) {
+        if (index % 2 == 0) {
             System.out.print(StringUtils.leftPad(binaries.get(index), MAX_LONG_DIGITS));
         } else {
             System.out.print(binaries.get(index));
@@ -166,8 +177,7 @@ public class BitwiseCalculator {
             String firstBinary,
             String secondBinary,
             String binaryResult,
-            int maxLength
-    ) {
+            int maxLength) {
 
     }
 

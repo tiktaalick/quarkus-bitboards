@@ -8,7 +8,9 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.util.List;
+
+import static org.mark.BitboardFactory.createDecimalsFromBitboards;
+import static org.mark.BitboardFactory.createInitialBitboardsWhitePlayer;
 
 public class UserInterface extends JPanel {
 
@@ -47,43 +49,34 @@ public class UserInterface extends JPanel {
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jFrame.add(ui);
         jFrame.setSize(757, 570);
-        jFrame.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - jFrame.getWidth()) / 2,
-                (Toolkit.getDefaultToolkit().getScreenSize().height - jFrame.getHeight()) / 2);
+        jFrame.setLocation((Toolkit.getDefaultToolkit()
+                                   .getScreenSize().width - jFrame.getWidth()) / 2,
+                (Toolkit.getDefaultToolkit()
+                        .getScreenSize().height - jFrame.getHeight()) / 2);
         jFrame.setVisible(true);
         newGame();
         jFrame.repaint();
     }
 
     public static void newGame() {
-        List<Long> bitBoards = BoardGeneration.initiateStandardChess();
-        WR = bitBoards.get(0);
-        WN = bitBoards.get(1);
-        WB = bitBoards.get(2);
-        WQ = bitBoards.get(3);
-        WK = bitBoards.get(4);
-        WP = bitBoards.get(5);
-        BR = bitBoards.get(6);
-        BN = bitBoards.get(7);
-        BB = bitBoards.get(8);
-        BQ = bitBoards.get(9);
-        BK = bitBoards.get(10);
-        BP = bitBoards.get(11);
-        Moves.possibleMovesWhite("",WR,WN,WB,WQ,WK,WP,BR,BN,BB,BQ,BK,BP);
+        Long[] decimals = createDecimalsFromBitboards(createInitialBitboardsWhitePlayer());
+
+        Moves.possibleMovesWhite("", decimals);
     }
 
-    public void drawBoard(Graphics g) {
-        for (int i = 0; i < 64; i += 2) {
-            g.setColor(new Color(255, 200, 100));
-            g.fillRect((int) ((i % 8 + (i / 8) % 2) * squareSize) + border,
-                    (int) ((i / 8) * squareSize) + border,
-                    (int) squareSize,
-                    (int) squareSize);
-            g.setColor(new Color(150, 50, 30));
-            g.fillRect((int) (((i + 1) % 8 - ((i + 1) / 8) % 2) * squareSize) + border,
-                    (int) (((i + 1) / 8) * squareSize) + border,
-                    (int) squareSize,
-                    (int) squareSize);
-        }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        this.setBackground(new Color(200, 100, 0));
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                squareSize = (double) (Math.min(getHeight(), getWidth() - 200 - border) - 2 * border) / 8;
+            }
+        });
+        drawBorders(g);
+        drawBoard(g);
+        drawPieces(g);
     }
 
     public void drawBorders(Graphics g) {
@@ -100,6 +93,21 @@ public class UserInterface extends JPanel {
         g.fill3DRect((int) (8 * squareSize) + border, (int) (8 * squareSize) + border, border, border, true);
         g.fill3DRect((int) (8 * squareSize) + 2 + border + 200, 0, border, border, true);
         g.fill3DRect((int) (8 * squareSize) + 2 * border + 200, (int) (8 * squareSize) + border, border, border, true);
+    }
+
+    public void drawBoard(Graphics g) {
+        for (int i = 0; i < 64; i += 2) {
+            g.setColor(new Color(255, 200, 100));
+            g.fillRect((int) ((i % 8 + (i / 8) % 2) * squareSize) + border,
+                    (int) ((i / 8) * squareSize) + border,
+                    (int) squareSize,
+                    (int) squareSize);
+            g.setColor(new Color(150, 50, 30));
+            g.fillRect((int) (((i + 1) % 8 - ((i + 1) / 8) % 2) * squareSize) + border,
+                    (int) (((i + 1) / 8) * squareSize) + border,
+                    (int) squareSize,
+                    (int) squareSize);
+        }
     }
 
     public void drawPieces(Graphics g) {
@@ -137,20 +145,5 @@ public class UserInterface extends JPanel {
                     (int) (squareSize),
                     this);
         }
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        this.setBackground(new Color(200, 100, 0));
-        this.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                squareSize = (double) (Math.min(getHeight(), getWidth() - 200 - border) - 2 * border) / 8;
-            }
-        });
-        drawBorders(g);
-        drawBoard(g);
-        drawPieces(g);
     }
 }

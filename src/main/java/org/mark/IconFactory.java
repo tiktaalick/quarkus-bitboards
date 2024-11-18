@@ -10,8 +10,7 @@ import static org.mark.UserInterface.squareSize;
 
 public final class IconFactory {
 
-    private static final String             DIRECTORY  = System.getProperty("user.dir") + "\\src\\main\\resources" +
-            "\\images\\";
+    private static final String             DIRECTORY  = System.getProperty("user.dir") + "\\src\\main\\resources" + "\\images\\";
     private static final String             EXTENSION  = ".png";
     private static final Map<String, Image> ICONS      = new HashMap<>();
     private static final String             UNDERSCORE = "_";
@@ -35,16 +34,17 @@ public final class IconFactory {
         return ICONS.get(playerColor + " " + pieceType);
     }
 
-    private static String createIconPath(String pieceType, String color) {
-        return DIRECTORY + color + UNDERSCORE + pieceType + EXTENSION;
-    }
-
     private static Image createImage(String pieceType, String playerColor) {
-        return getResource(createIconPath(pieceType, playerColor))
-                .getScaledInstance((int) squareSize, (int) squareSize, Image.SCALE_SMOOTH);
+        return getResource(createIconPath(pieceType, playerColor)).getScaledInstance((int) squareSize,
+                (int) squareSize,
+                Image.SCALE_SMOOTH);
     }
 
     private static Image getResource(String iconPath) {
         return new ImageIcon(iconPath).getImage();
+    }
+
+    private static String createIconPath(String pieceType, String color) {
+        return DIRECTORY + color + UNDERSCORE + pieceType + EXTENSION;
     }
 }

@@ -13,9 +13,7 @@ public class GreetingResource {
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() {
         Log.info("Standard chess");
-        BoardGeneration.initiateStandardChess();
-        Log.info("Chess 960");
-        BoardGeneration.initiateChess960();
+        BitboardFactory.createInitialBitboardsWhitePlayer();
         return "Hello from Quarkus REST";
     }
 }
