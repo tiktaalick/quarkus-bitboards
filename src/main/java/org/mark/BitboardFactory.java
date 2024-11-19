@@ -7,20 +7,21 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static org.mark.Bitboard.BLACK_MATERIAL_TO_CAPTURE;
+import static org.mark.Bitboard.EMPTY_SQUARES;
+import static org.mark.Bitboard.EN_PASSANT_MOVE;
+import static org.mark.Bitboard.NO_BLACK_MATERIAL_NO_WHITE_KING;
+import static org.mark.Bitboard.NO_WHITE_MATERIAL_NO_BLACK_KING;
+import static org.mark.Bitboard.WHITE_MATERIAL_TO_CAPTURE;
 import static org.mark.Material.BLACK_BISHOP;
 import static org.mark.Material.BLACK_KING;
 import static org.mark.Material.BLACK_KNIGHT;
-import static org.mark.Material.BLACK_MATERIAL_TO_CAPTURE;
 import static org.mark.Material.BLACK_PAWN;
 import static org.mark.Material.BLACK_QUEEN;
 import static org.mark.Material.BLACK_ROOK;
-import static org.mark.Material.EMPTY_SQUARES;
-import static org.mark.Material.NO_BLACK_MATERIAL_NO_WHITE_KING;
-import static org.mark.Material.NO_WHITE_MATERIAL_NO_BLACK_KING;
 import static org.mark.Material.WHITE_BISHOP;
 import static org.mark.Material.WHITE_KING;
 import static org.mark.Material.WHITE_KNIGHT;
-import static org.mark.Material.WHITE_MATERIAL_TO_CAPTURE;
 import static org.mark.Material.WHITE_PAWN;
 import static org.mark.Material.WHITE_QUEEN;
 import static org.mark.Material.WHITE_ROOK;
@@ -119,7 +120,7 @@ public class BitboardFactory {
                              .map(BitboardFactory::getDecimalValueFromBitboard)
                              .collect(Collectors.toList());
 
-        decimals.add(NO_WHITE_MATERIAL_NO_BLACK_KING.ordinal(),
+        decimals.add(NO_WHITE_MATERIAL_NO_BLACK_KING.getIndex(),
                 ~(decimals.get(WHITE_PAWN.ordinal()) |
                         decimals.get(WHITE_ROOK.ordinal()) |
                         decimals.get(WHITE_KNIGHT.ordinal()) |
@@ -128,7 +129,7 @@ public class BitboardFactory {
                         decimals.get(WHITE_KING.ordinal()) |
                         decimals.get(BLACK_KING.ordinal())));
 
-        decimals.add(NO_BLACK_MATERIAL_NO_WHITE_KING.ordinal(),
+        decimals.add(NO_BLACK_MATERIAL_NO_WHITE_KING.getIndex(),
                 ~(decimals.get(BLACK_PAWN.ordinal()) |
                         decimals.get(BLACK_ROOK.ordinal()) |
                         decimals.get(BLACK_KNIGHT.ordinal()) |
@@ -137,21 +138,21 @@ public class BitboardFactory {
                         decimals.get(BLACK_KING.ordinal()) |
                         decimals.get(WHITE_KING.ordinal())));
 
-        decimals.add(WHITE_MATERIAL_TO_CAPTURE.ordinal(),
+        decimals.add(WHITE_MATERIAL_TO_CAPTURE.getIndex(),
                 decimals.get(WHITE_PAWN.ordinal()) |
                         decimals.get(WHITE_ROOK.ordinal()) |
                         decimals.get(WHITE_KNIGHT.ordinal()) |
                         decimals.get(WHITE_BISHOP.ordinal()) |
                         decimals.get(WHITE_QUEEN.ordinal()));
 
-        decimals.add(BLACK_MATERIAL_TO_CAPTURE.ordinal(),
+        decimals.add(BLACK_MATERIAL_TO_CAPTURE.getIndex(),
                 decimals.get(BLACK_PAWN.ordinal()) |
                         decimals.get(BLACK_ROOK.ordinal()) |
                         decimals.get(BLACK_KNIGHT.ordinal()) |
                         decimals.get(BLACK_BISHOP.ordinal()) |
                         decimals.get(BLACK_QUEEN.ordinal()));
 
-        decimals.add(EMPTY_SQUARES.ordinal(),
+        decimals.add(EMPTY_SQUARES.getIndex(),
                 ~(decimals.get(WHITE_PAWN.ordinal()) |
                         decimals.get(WHITE_ROOK.ordinal()) |
                         decimals.get(WHITE_KNIGHT.ordinal()) |
@@ -164,10 +165,12 @@ public class BitboardFactory {
                         decimals.get(BLACK_BISHOP.ordinal()) |
                         decimals.get(BLACK_QUEEN.ordinal())));
 
+        decimals.add(EN_PASSANT_MOVE.getIndex(), 0L);
+
         return decimals.toArray(new Long[0]);
     }
 
-    private static long getDecimalValueFromBitboard(String bitboard) {
+    public static long getDecimalValueFromBitboard(String bitboard) {
         return new BigInteger(createBinaryStringFromBoard(bitboard), CONVERT_FROM_BINARY).longValue();
     }
 
@@ -220,6 +223,10 @@ public class BitboardFactory {
 
     public static long isOnRank4() {
         return RANK_4;
+    }
+
+    public static long isOnRank8() {
+        return RANK_8;
     }
 
     private static String createBitboardFromBinaryString(String binaryString) {

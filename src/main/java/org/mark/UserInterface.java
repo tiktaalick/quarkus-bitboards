@@ -8,10 +8,14 @@ import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
+import static org.mark.Bitboard.EN_PASSANT_MOVE;
 import static org.mark.BitboardFactory.createDecimalsFromBitboards;
 import static org.mark.BitboardFactory.createInitialBitboardsWhitePlayer;
+import static org.mark.BitboardFactory.getDecimalValueFromBitboard;
 
 public final class UserInterface extends JPanel {
 
@@ -55,8 +59,22 @@ public final class UserInterface extends JPanel {
 
     public static void newGame() {
         boards = createDecimalsFromBitboards(createInitialBitboardsWhitePlayer());
+        boards = doADummyMoveForBlack(boards);
+        JFRAME.setTitle(MovesFactory.createPossibleMovesForWhite(boards));
+    }
 
-        JFRAME.setTitle(Moves.possibleMovesWhite("", boards));
+    private static Long[] doADummyMoveForBlack(Long[] boards) {
+        List<Long> boardsList = new ArrayList<>(List.of(boards));
+        boardsList.add(EN_PASSANT_MOVE.getIndex(), getDecimalValueFromBitboard("""
+                                                                               00000000
+                                                                               00000000
+                                                                               00000000
+                                                                               00001010
+                                                                               00000000
+                                                                               00000000
+                                                                               00000000
+                                                                               00000000"""));
+        return boardsList.toArray(Long[]::new);
     }
 
     @Override

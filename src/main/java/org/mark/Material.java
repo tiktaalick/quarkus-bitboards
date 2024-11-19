@@ -12,12 +12,7 @@ public enum Material {
     BLACK_KNIGHT("n", "black knight"),
     BLACK_BISHOP("b", "black bishop"),
     BLACK_QUEEN("q", "black queen"),
-    BLACK_KING("k", "black king"),
-    NO_WHITE_MATERIAL_NO_BLACK_KING("~WHITE", "no white material, no black king"),
-    NO_BLACK_MATERIAL_NO_WHITE_KING("~BLACK", "no black material, no white king"),
-    WHITE_MATERIAL_TO_CAPTURE("WHITE", "white material to capture"),
-    BLACK_MATERIAL_TO_CAPTURE("BLACK", "black material to capture"),
-    EMPTY_SQUARES("EMPTY", "empty squares");
+    BLACK_KING("k", "black king");
 
     private final String code;
     private final String name;
