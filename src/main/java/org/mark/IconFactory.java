@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mark.UserInterface.squareSize;
+import static org.mark.UserInterface.getSquareSize;
 
 public final class IconFactory {
 
@@ -26,17 +26,13 @@ public final class IconFactory {
     private IconFactory() {
     }
 
-    public static Image getIcon(String playerColor, String pieceType) {
-        if (playerColor == null || pieceType == null) {
-            return null;
-        }
-
-        return ICONS.get(playerColor + " " + pieceType);
+    public static Image getIcon(String name) {
+        return name == null ? null : ICONS.get(name);
     }
 
     private static Image createImage(String pieceType, String playerColor) {
-        return getResource(createIconPath(pieceType, playerColor)).getScaledInstance((int) squareSize,
-                (int) squareSize,
+        return getResource(createIconPath(pieceType, playerColor)).getScaledInstance((int) getSquareSize(),
+                (int) getSquareSize(),
                 Image.SCALE_SMOOTH);
     }
 
