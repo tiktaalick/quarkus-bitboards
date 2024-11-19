@@ -13,48 +13,50 @@ import java.util.stream.IntStream;
 import static org.mark.BitboardFactory.createDecimalsFromBitboards;
 import static org.mark.BitboardFactory.createInitialBitboardsWhitePlayer;
 
-public class UserInterface extends JPanel {
+public final class UserInterface extends JPanel {
 
-    private static final Color  BACKGROUND            = new Color(240, 240, 240);
-    private static final int    BORDER                = 20;
-    private static final Color  DARK                  = new Color(170, 110, 90);
-    private static final int    FILE_LENGTH           = 8;
-    private static final int    FILE_LENGTH_MINUS_ONE = 7;
-    private static final Color  LIGHT                 = new Color(240, 240, 200);
-    private static final double NINETY_PERCENT        = 0.9;
-    private static final int    NUMBER_OF_SQUARES     = 64;
-    private static final int    TITLE_BAR_SIZE        = 40;
+    private static final Color         BACKGROUND            = new Color(240, 240, 240);
+    private static final int           BORDER                = 20;
+    private static final Color         DARK                  = new Color(170, 110, 90);
+    private static final int           FILE_LENGTH           = 8;
+    private static final int           FILE_LENGTH_MINUS_ONE = 7;
+    private static final JFrame        JFRAME                = new JFrame("Bitboards chess app");
+    private static final Color         LIGHT                 = new Color(240, 240, 200);
+    private static final double        NINETY_PERCENT        = 0.9;
+    private static final int           NUMBER_OF_SQUARES     = 64;
+    private static final double        SIXTY_PERCENT         = 0.6;
+    private static final int           TITLE_BAR_SIZE        = 40;
+    private static final UserInterface USER_INTERFACE        = new UserInterface();
 
-    private static double        squareSize;
-    private static Long[]        boards;
-    private static JFrame        jFrame        = new JFrame("Bitboards chess app");
-    private static UserInterface userInterface = new UserInterface();
+    private static Long[] boards;
+    private static double squareSize;
 
     public static double getSquareSize() {
         return squareSize;
     }
 
     public static void main(String[] args) {
-        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        jFrame.add(userInterface);
-        jFrame.setSize((int) (Toolkit.getDefaultToolkit()
-                                     .getScreenSize().width * NINETY_PERCENT),
+        JFRAME.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        JFRAME.add(USER_INTERFACE);
+        JFRAME.setSize((int) (Toolkit.getDefaultToolkit()
+                                     .getScreenSize().height * NINETY_PERCENT - TITLE_BAR_SIZE * SIXTY_PERCENT),
                 (int) (Toolkit.getDefaultToolkit()
                               .getScreenSize().height * NINETY_PERCENT));
-        jFrame.setLocation((Toolkit.getDefaultToolkit()
-                                   .getScreenSize().width - jFrame.getWidth()) / 2,
+        JFRAME.setLocation((Toolkit.getDefaultToolkit()
+                                   .getScreenSize().width - JFRAME.getWidth()) / 2,
                 (Toolkit.getDefaultToolkit()
-                        .getScreenSize().height - jFrame.getHeight()) / 2);
-        squareSize = (double) (Math.min(jFrame.getHeight(), jFrame.getWidth()) - 2 * BORDER - TITLE_BAR_SIZE) / FILE_LENGTH;
-        jFrame.setVisible(true);
+                        .getScreenSize().height - JFRAME.getHeight()) / 2);
+        squareSize = (double) (JFRAME.getHeight() - 2 * BORDER - TITLE_BAR_SIZE) / FILE_LENGTH;
+        JFRAME.setVisible(true);
+        JFRAME.setResizable(false);
         newGame();
-        jFrame.repaint();
+        JFRAME.repaint();
     }
 
     public static void newGame() {
         boards = createDecimalsFromBitboards(createInitialBitboardsWhitePlayer());
 
-        Moves.possibleMovesWhite("", boards);
+        JFRAME.setTitle(Moves.possibleMovesWhite("", boards));
     }
 
     @Override
@@ -64,7 +66,7 @@ public class UserInterface extends JPanel {
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                squareSize = (double) (Math.min(jFrame.getHeight(), jFrame.getWidth()) - 2 * BORDER - TITLE_BAR_SIZE) /
+                squareSize = (double) (Math.min(JFRAME.getHeight(), JFRAME.getWidth()) - 2 * BORDER - TITLE_BAR_SIZE) /
                         FILE_LENGTH;
             }
         });
@@ -73,7 +75,7 @@ public class UserInterface extends JPanel {
         drawMaterial(graphics);
     }
 
-    public void drawBorders(Graphics graphics) {
+    public static void drawBorders(Graphics graphics) {
         graphics.setColor(LIGHT);
         graphics.fill3DRect(0, 0, BORDER, (int) (FILE_LENGTH * squareSize) + BORDER, true);
         graphics.fill3DRect((int) (FILE_LENGTH * squareSize) + BORDER,
@@ -89,7 +91,7 @@ public class UserInterface extends JPanel {
                 true);
     }
 
-    public void drawBoard(Graphics graphics) {
+    public static void drawBoard(Graphics graphics) {
         IntStream.range(0, NUMBER_OF_SQUARES)
                  .filter(index -> index % 2 == 0)
                  .forEach(index -> {
