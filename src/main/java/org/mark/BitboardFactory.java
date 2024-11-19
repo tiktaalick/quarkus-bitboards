@@ -107,7 +107,7 @@ public class BitboardFactory {
                                                                                          00000000
                                                                                          00000000""");
 
-    //    public static String createBitboardFromDecimal(long decimalValue) {
+//    public static String createBitboardFromDecimal(long decimalValue) {
 //        return createBitboardFromBinaryString(createBinaryStringFromDecimal(decimalValue));
 //    }
 
@@ -229,7 +229,27 @@ public class BitboardFactory {
         return RANK_8;
     }
 
-    private static String createBitboardFromBinaryString(String binaryString) {
+    public static long whitePawns(Long[] board) {
+        return board[WHITE_PAWN.ordinal()];
+    }
+
+    public static long blackMaterialToCapture(Long[] board) {
+        return board[BLACK_MATERIAL_TO_CAPTURE.getIndex()];
+    }
+
+    public static long emptySquares(Long[] board) {
+        return board[EMPTY_SQUARES.getIndex()];
+    }
+
+    public static long occupiedSquares(Long[] board) {
+        return ~board[EMPTY_SQUARES.getIndex()];
+    }
+
+    public static long enPassantMove(Long[] board) {
+        return board[EN_PASSANT_MOVE.getIndex()];
+    }
+
+    public static String createBitboardFromBinaryString(String binaryString) {
         return IntStream.range(0, binaryString.length())
                         .mapToObj(index -> binaryString.charAt(index) +
                                 ((index + 1) % FILE_LENGTH == 0 ? NEW_LINE : EMPTY_STRING))

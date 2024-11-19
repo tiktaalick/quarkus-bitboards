@@ -3,16 +3,17 @@ package org.mark;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.mark.Bitboard.BLACK_MATERIAL_TO_CAPTURE;
-import static org.mark.Bitboard.EMPTY_SQUARES;
-import static org.mark.Bitboard.EN_PASSANT_MOVE;
+import static org.mark.BitboardFactory.blackMaterialToCapture;
 import static org.mark.BitboardFactory.createBinaryStringFromBoard;
 import static org.mark.BitboardFactory.createBinaryStringFromDecimal;
+import static org.mark.BitboardFactory.emptySquares;
+import static org.mark.BitboardFactory.enPassantMove;
 import static org.mark.BitboardFactory.isNotOnFileA;
 import static org.mark.BitboardFactory.isNotOnFileH;
 import static org.mark.BitboardFactory.isNotOnRank8;
 import static org.mark.BitboardFactory.isOnRank4;
 import static org.mark.BitboardFactory.isOnRank8;
+import static org.mark.BitboardFactory.whitePawns;
 import static org.mark.Material.WHITE_PAWN;
 import static org.mark.Material.WHITE_QUEEN;
 
@@ -79,28 +80,12 @@ public class MovesFactory {
         return bitboard << -NORTH_EAST;
     }
 
-    private static long whitePawns(Long[] board) {
-        return board[WHITE_PAWN.ordinal()];
-    }
-
-    private static long blackMaterialToCapture(Long[] board) {
-        return board[BLACK_MATERIAL_TO_CAPTURE.getIndex()];
-    }
-
     private static long goNorthWest(long board) {
         return board << -NORTH_WEST;
     }
 
     private static long goNorthToAnEmptySquare(long board, long empty) {
         return (board << -NORTH) & empty;
-    }
-
-    private static long emptySquares(Long[] board) {
-        return board[EMPTY_SQUARES.getIndex()];
-    }
-
-    private static long enPassantMove(Long[] board) {
-        return board[EN_PASSANT_MOVE.getIndex()];
     }
 
     private static String createListOfMoves(String bitboardTarget, int move, String material) {

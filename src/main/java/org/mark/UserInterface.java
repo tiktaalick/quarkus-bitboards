@@ -68,8 +68,8 @@ public final class UserInterface extends JPanel {
         boardsList.add(EN_PASSANT_MOVE.getIndex(), getDecimalValueFromBitboard("""
                                                                                00000000
                                                                                00000000
+                                                                               00000100
                                                                                00000000
-                                                                               00001010
                                                                                00000000
                                                                                00000000
                                                                                00000000
