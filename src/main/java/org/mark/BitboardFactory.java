@@ -87,6 +87,10 @@ public class BitboardFactory {
                                                                                          00000001
                                                                                          00000001
                                                                                          00000001""");
+    public static final  Long[] HORIZONTALS                = createHorizontals();
+    public static final  Long[] VERTICALS                  = createVerticals();
+    public static final  Long[] PRIMARY_DIAGONALS          = createPrimaryDiagonals();
+    public static final  Long[] SECONDARY_DIAGONALS        = createPrimaryDiagonals();
     private static final int    NUMBER_OF_SQUARES          = 64;
     private static final long   RANK_4                     = getDecimalValueFromBitboard("""
                                                                                          00000000
@@ -107,9 +111,20 @@ public class BitboardFactory {
                                                                                          00000000
                                                                                          00000000""");
 
-//    public static String createBitboardFromDecimal(long decimalValue) {
-//        return createBitboardFromBinaryString(createBinaryStringFromDecimal(decimalValue));
-//    }
+    public static long blackMaterialToCapture(Long[] board) {
+        return board[BLACK_MATERIAL_TO_CAPTURE.getIndex()];
+    }
+
+    public static String createBitboardFromDecimal(long decimalValue) {
+        return createBitboardFromBinaryString(createBinaryStringFromDecimal(decimalValue));
+    }
+
+    public static String createBitboardFromBinaryString(String binaryString) {
+        return IntStream.range(0, binaryString.length())
+                        .mapToObj(index -> binaryString.charAt(index) +
+                                ((index + 1) % FILE_LENGTH == 0 ? NEW_LINE : EMPTY_STRING))
+                        .collect(Collectors.joining());
+    }
 
     public static String createBinaryStringFromDecimal(Long decimalValue) {
         return StringUtils.leftPad(Long.toBinaryString(decimalValue), NUMBER_OF_SQUARES, LEADING_ZERO);
@@ -209,6 +224,14 @@ public class BitboardFactory {
         return createBitboardsFromChessboard(INITIAL_BOARD_WHITE_PLAYER);
     }
 
+    public static long emptySquares(Long[] board) {
+        return board[EMPTY_SQUARES.getIndex()];
+    }
+
+    public static long enPassantMove(Long[] board) {
+        return board[EN_PASSANT_MOVE.getIndex()];
+    }
+
     public static long isNotOnFileA() {
         return ~FILE_A;
     }
@@ -229,30 +252,75 @@ public class BitboardFactory {
         return RANK_8;
     }
 
-    public static long whitePawns(Long[] board) {
-        return board[WHITE_PAWN.ordinal()];
-    }
-
-    public static long blackMaterialToCapture(Long[] board) {
-        return board[BLACK_MATERIAL_TO_CAPTURE.getIndex()];
-    }
-
-    public static long emptySquares(Long[] board) {
-        return board[EMPTY_SQUARES.getIndex()];
-    }
-
     public static long occupiedSquares(Long[] board) {
         return ~board[EMPTY_SQUARES.getIndex()];
     }
 
-    public static long enPassantMove(Long[] board) {
-        return board[EN_PASSANT_MOVE.getIndex()];
+    public static long whitePawns(Long[] board) {
+        return board[WHITE_PAWN.ordinal()];
     }
 
-    public static String createBitboardFromBinaryString(String binaryString) {
-        return IntStream.range(0, binaryString.length())
-                        .mapToObj(index -> binaryString.charAt(index) +
-                                ((index + 1) % FILE_LENGTH == 0 ? NEW_LINE : EMPTY_STRING))
+    private static Long[] createHorizontals() {
+        return IntStream.range(0, 8)
+                        .mapToObj(parentIndex -> getDecimalValueFromBitboard(createRank(parentIndex)))
+                        .toArray(Long[]::new);
+    }
+
+    private static String createRank(int parentIndex) {
+        return IntStream.range(0, 8)
+                        .mapToObj(childIndex -> childIndex == parentIndex ? "1".repeat(8) : "0".repeat(8))
+                        .collect(Collectors.joining());
+    }
+
+    private static Long[] createPrimaryDiagonals() {
+        return IntStream.range(0, 8)
+                        .mapToObj(parentIndex -> getDecimalValueFromBitboard(createPrimaryDiagonal(parentIndex)))
+                        .toArray(Long[]::new);
+    }
+
+    private static String createPrimaryDiagonal(int parentIndex) {
+        return IntStream.range(0, 8)
+                        .mapToObj(childIndex -> {
+                            StringBuilder stringBuilder = new StringBuilder("0".repeat(8));
+                            if (7 - parentIndex + childIndex >= 0 && childIndex <= parentIndex) {
+                                stringBuilder.setCharAt(7 - parentIndex + childIndex, '1');
+                            }
+                            return stringBuilder.toString();
+                        })
+                        .collect(Collectors.joining());
+    }
+
+    private static Long[] createSecondaryDiagonals() {
+        return IntStream.range(0, 8)
+                        .mapToObj(parentIndex -> getDecimalValueFromBitboard(createSecondaryDiagonal(parentIndex)))
+                        .toArray(Long[]::new);
+    }
+
+    private static String createSecondaryDiagonal(int parentIndex) {
+        return IntStream.range(0, 8)
+                        .mapToObj(childIndex -> {
+                            StringBuilder stringBuilder = new StringBuilder("0".repeat(8));
+                            if ((parentIndex - childIndex) <= 7 && childIndex <= parentIndex) {
+                                stringBuilder.setCharAt(parentIndex - childIndex, '1');
+                            }
+                            return stringBuilder.toString();
+                        })
+                        .collect(Collectors.joining());
+    }
+
+    private static Long[] createVerticals() {
+        return IntStream.range(0, 8)
+                        .mapToObj(parentIndex -> getDecimalValueFromBitboard(createFile(parentIndex)))
+                        .toArray(Long[]::new);
+    }
+
+    private static String createFile(int parentIndex) {
+        return IntStream.range(0, 8)
+                        .mapToObj(childIndex -> {
+                            var stringBuilder = new StringBuilder("0".repeat(8));
+                            stringBuilder.setCharAt(parentIndex, '1');
+                            return stringBuilder.toString();
+                        })
                         .collect(Collectors.joining());
     }
 }
