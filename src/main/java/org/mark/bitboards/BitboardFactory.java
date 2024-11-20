@@ -232,6 +232,30 @@ public class BitboardFactory {
         return board[EN_PASSANT_MOVE.getIndex()];
     }
 
+    public static long getDiagonals(int index) {
+        return getPrimaryDiagonal(index) | getSecondaryDiagonal(index);
+    }
+
+    private static long getPrimaryDiagonal(int index) {
+        return PRIMARY_DIAGONALS[7 - index % 8 + index / 8];
+    }
+
+    private static long getSecondaryDiagonal(int index) {
+        return SECONDARY_DIAGONALS[index % 8 + index / 8];
+    }
+
+    public static long getOrthogonals(int index) {
+        return getHorizontal(index) | getVertical(index);
+    }
+
+    private static long getHorizontal(int index) {
+        return HORIZONTALS[index / 8];
+    }
+
+    private static long getVertical(int index) {
+        return VERTICALS[index % 8];
+    }
+
     public static long isNotOnFileA() {
         return ~FILE_A;
     }

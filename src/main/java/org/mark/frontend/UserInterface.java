@@ -63,7 +63,7 @@ public final class UserInterface extends JPanel {
     public static void newGame() {
         boards = createDecimalsFromBitboards(createInitialBitboardsWhitePlayer());
         boards = doADummyMoveForBlack(boards);
-        JFRAME.setTitle(MovesFactory.createPossibleMovesForWhite(boards));
+        JFRAME.setTitle(MovesFactory.createPossibleMovesForPlayer(boards));
     }
 
     private static Long[] doADummyMoveForBlack(Long[] boards) {

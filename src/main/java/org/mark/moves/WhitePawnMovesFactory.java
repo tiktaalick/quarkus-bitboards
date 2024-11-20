@@ -8,6 +8,7 @@ import static org.mark.bitboards.BitboardFactory.enPassantMove;
 import static org.mark.bitboards.BitboardFactory.isNotOnFileA;
 import static org.mark.bitboards.BitboardFactory.isNotOnFileH;
 import static org.mark.bitboards.BitboardFactory.isNotOnRank8;
+import static org.mark.bitboards.BitboardFactory.isOnRank4;
 import static org.mark.bitboards.BitboardFactory.isOnRank8;
 import static org.mark.bitboards.BitboardFactory.whitePawns;
 
@@ -23,6 +24,17 @@ public class WhitePawnMovesFactory extends MovesFactory {
                 goOneStepNorth(boards) +
                 goOneStepNorthAndPromote(boards) +
                 goTwoStepsNorth(boards);
+    }
+
+    public static String goOneStepNorth(Long[] boards) {
+        return createListOfMoves(goNorthToAnEmptySquare(whitePawns(boards), emptySquares(boards)) & isNotOnRank8(),
+                SOUTH,
+                WHITE_PAWN.getCode());
+    }
+
+    public static String goTwoStepsNorth(Long[] boards) {
+        return createListOfMoves(goNorthToAnEmptySquare(goNorthToAnEmptySquare(whitePawns(boards), emptySquares(boards)),
+                emptySquares(boards)) & isOnRank4(), SOUTH_SOUTH, WHITE_PAWN.getCode());
     }
 
     private static String captureNorthEast(Long[] boards) {

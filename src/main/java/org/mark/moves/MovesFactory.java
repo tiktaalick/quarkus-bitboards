@@ -3,13 +3,8 @@ package org.mark.moves;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.mark.Material.WHITE_PAWN;
 import static org.mark.bitboards.BitboardFactory.createBinaryStringFromBoard;
 import static org.mark.bitboards.BitboardFactory.createBinaryStringFromDecimal;
-import static org.mark.bitboards.BitboardFactory.emptySquares;
-import static org.mark.bitboards.BitboardFactory.isNotOnRank8;
-import static org.mark.bitboards.BitboardFactory.isOnRank4;
-import static org.mark.bitboards.BitboardFactory.whitePawns;
 
 public class MovesFactory {
 
@@ -25,7 +20,7 @@ public class MovesFactory {
     private static final int NUMBER_OF_FILES = 8;
     private static final int NUMBER_OF_RANKS = 8;
 
-    public static String createPossibleMovesForWhite(Long[] boards) {
+    public static String createPossibleMovesForPlayer(Long[] boards) {
         return WhitePawnMovesFactory.createPossibleMoves(boards);
     }
 
@@ -35,12 +30,6 @@ public class MovesFactory {
 
     public static long goNorthWest(long board) {
         return board << -NORTH_WEST;
-    }
-
-    public static String goOneStepNorth(Long[] boards) {
-        return createListOfMoves(goNorthToAnEmptySquare(whitePawns(boards), emptySquares(boards)) & isNotOnRank8(),
-                SOUTH,
-                WHITE_PAWN.getCode());
     }
 
     public static String createListOfMoves(long targets, int reversedMove, String material) {
@@ -62,10 +51,5 @@ public class MovesFactory {
 
     private static String createCoordinates(int index) {
         return "" + (char) ('a' + index % NUMBER_OF_FILES) + ((NUMBER_OF_RANKS + 1) - (index / NUMBER_OF_RANKS + 1));
-    }
-
-    public static String goTwoStepsNorth(Long[] boards) {
-        return createListOfMoves(goNorthToAnEmptySquare(goNorthToAnEmptySquare(whitePawns(boards), emptySquares(boards)),
-                emptySquares(boards)) & isOnRank4(), SOUTH_SOUTH, WHITE_PAWN.getCode());
     }
 }
