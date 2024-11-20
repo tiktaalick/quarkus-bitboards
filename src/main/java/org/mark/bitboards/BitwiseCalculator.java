@@ -1,4 +1,4 @@
-package org.mark;
+package org.mark.bitboards;
 
 import org.apache.commons.lang3.StringUtils;
 

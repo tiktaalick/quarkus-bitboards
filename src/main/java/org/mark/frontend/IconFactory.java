@@ -1,4 +1,4 @@
-package org.mark;
+package org.mark.frontend;
 
 import javax.swing.ImageIcon;
 import java.awt.Image;
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mark.UserInterface.getSquareSize;
+import static org.mark.frontend.UserInterface.getSquareSize;
 
 public final class IconFactory {
 

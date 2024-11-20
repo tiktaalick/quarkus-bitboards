@@ -1,4 +1,6 @@
-package org.mark;
+package org.mark.bitboards;
+
+import org.mark.Material;
 
 public enum Bitboard {
     NO_WHITE_MATERIAL_NO_BLACK_KING,

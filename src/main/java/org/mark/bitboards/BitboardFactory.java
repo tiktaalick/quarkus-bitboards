@@ -1,4 +1,4 @@
-package org.mark;
+package org.mark.bitboards;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -7,12 +7,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static org.mark.Bitboard.BLACK_MATERIAL_TO_CAPTURE;
-import static org.mark.Bitboard.EMPTY_SQUARES;
-import static org.mark.Bitboard.EN_PASSANT_MOVE;
-import static org.mark.Bitboard.NO_BLACK_MATERIAL_NO_WHITE_KING;
-import static org.mark.Bitboard.NO_WHITE_MATERIAL_NO_BLACK_KING;
-import static org.mark.Bitboard.WHITE_MATERIAL_TO_CAPTURE;
 import static org.mark.Material.BLACK_BISHOP;
 import static org.mark.Material.BLACK_KING;
 import static org.mark.Material.BLACK_KNIGHT;
@@ -25,6 +19,12 @@ import static org.mark.Material.WHITE_KNIGHT;
 import static org.mark.Material.WHITE_PAWN;
 import static org.mark.Material.WHITE_QUEEN;
 import static org.mark.Material.WHITE_ROOK;
+import static org.mark.bitboards.Bitboard.BLACK_MATERIAL_TO_CAPTURE;
+import static org.mark.bitboards.Bitboard.EMPTY_SQUARES;
+import static org.mark.bitboards.Bitboard.EN_PASSANT_MOVE;
+import static org.mark.bitboards.Bitboard.NO_BLACK_MATERIAL_NO_WHITE_KING;
+import static org.mark.bitboards.Bitboard.NO_WHITE_MATERIAL_NO_BLACK_KING;
+import static org.mark.bitboards.Bitboard.WHITE_MATERIAL_TO_CAPTURE;
 
 public class BitboardFactory {
 

@@ -1,4 +1,7 @@
-package org.mark;
+package org.mark.frontend;
+
+import org.mark.Material;
+import org.mark.moves.MovesFactory;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -12,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.mark.Bitboard.EN_PASSANT_MOVE;
-import static org.mark.BitboardFactory.createDecimalsFromBitboards;
-import static org.mark.BitboardFactory.createInitialBitboardsWhitePlayer;
-import static org.mark.BitboardFactory.getDecimalValueFromBitboard;
+import static org.mark.bitboards.Bitboard.EN_PASSANT_MOVE;
+import static org.mark.bitboards.BitboardFactory.createDecimalsFromBitboards;
+import static org.mark.bitboards.BitboardFactory.createInitialBitboardsWhitePlayer;
+import static org.mark.bitboards.BitboardFactory.getDecimalValueFromBitboard;
 
 public final class UserInterface extends JPanel {
 
