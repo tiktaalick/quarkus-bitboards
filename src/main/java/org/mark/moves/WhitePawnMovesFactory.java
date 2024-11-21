@@ -2,15 +2,15 @@ package org.mark.moves;
 
 import static org.mark.Material.WHITE_PAWN;
 import static org.mark.Material.WHITE_QUEEN;
-import static org.mark.bitboards.BitboardFactory.blackMaterialToCapture;
-import static org.mark.bitboards.BitboardFactory.emptySquares;
-import static org.mark.bitboards.BitboardFactory.enPassantMove;
+import static org.mark.bitboards.BitboardFactory.getBlackMaterialToCapture;
+import static org.mark.bitboards.BitboardFactory.getEmptySquares;
+import static org.mark.bitboards.BitboardFactory.getEnPassantMove;
+import static org.mark.bitboards.BitboardFactory.getWhitePawns;
 import static org.mark.bitboards.BitboardFactory.isNotOnFileA;
 import static org.mark.bitboards.BitboardFactory.isNotOnFileH;
 import static org.mark.bitboards.BitboardFactory.isNotOnRank8;
 import static org.mark.bitboards.BitboardFactory.isOnRank4;
 import static org.mark.bitboards.BitboardFactory.isOnRank8;
-import static org.mark.bitboards.BitboardFactory.whitePawns;
 
 public class WhitePawnMovesFactory extends MovesFactory {
 
@@ -26,58 +26,60 @@ public class WhitePawnMovesFactory extends MovesFactory {
                 goTwoStepsNorth(boards);
     }
 
-    public static String goOneStepNorth(Long[] boards) {
-        return createListOfMoves(goNorthToAnEmptySquare(whitePawns(boards), emptySquares(boards)) & isNotOnRank8(),
-                SOUTH,
-                WHITE_PAWN.getCode());
-    }
-
-    public static String goTwoStepsNorth(Long[] boards) {
-        return createListOfMoves(goNorthToAnEmptySquare(goNorthToAnEmptySquare(whitePawns(boards), emptySquares(boards)),
-                emptySquares(boards)) & isOnRank4(), SOUTH_SOUTH, WHITE_PAWN.getCode());
-    }
-
     private static String captureNorthEast(Long[] boards) {
-        return createListOfMoves(goNorthEast(whitePawns(boards)) &
-                blackMaterialToCapture(boards) &
+        return createListOfMovesFromMultipleOrigins(goNorthEast(getWhitePawns(boards)) &
+                getBlackMaterialToCapture(boards) &
                 isNotOnRank8() &
                 isNotOnFileA(), SOUTH_WEST, WHITE_PAWN.getCode());
     }
 
     private static String captureNorthEastAndPromote(Long[] boards) {
-        return createListOfMoves(goNorthEast(whitePawns(boards)) & blackMaterialToCapture(boards) & isOnRank8() & isNotOnFileA(),
-                SOUTH_WEST,
-                WHITE_QUEEN.getCode());
+        return createListOfMovesFromMultipleOrigins(goNorthEast(getWhitePawns(boards)) &
+                getBlackMaterialToCapture(boards) &
+                isOnRank8() &
+                isNotOnFileA(), SOUTH_WEST, WHITE_QUEEN.getCode());
     }
 
     private static String captureNorthEastEnPassant(Long[] boards) {
-        return createListOfMoves(goNorthEast(whitePawns(boards)) & enPassantMove(boards) & isNotOnRank8() & isNotOnFileA(),
+        return createListOfMovesFromMultipleOrigins(goNorthEast(getWhitePawns(boards)) & getEnPassantMove(boards) & isNotOnRank8() & isNotOnFileA(),
                 SOUTH_WEST,
                 WHITE_PAWN.getCode());
     }
 
     private static String captureNorthWest(Long[] boards) {
-        return createListOfMoves(goNorthWest(whitePawns(boards)) &
-                blackMaterialToCapture(boards) &
+        return createListOfMovesFromMultipleOrigins(goNorthWest(getWhitePawns(boards)) &
+                getBlackMaterialToCapture(boards) &
                 isNotOnRank8() &
                 isNotOnFileH(), SOUTH_EAST, WHITE_PAWN.getCode());
     }
 
     private static String captureNorthWestAndPromote(Long[] boards) {
-        return createListOfMoves(goNorthWest(whitePawns(boards)) & blackMaterialToCapture(boards) & isOnRank8() & isNotOnFileH(),
-                SOUTH_EAST,
-                WHITE_QUEEN.getCode());
+        return createListOfMovesFromMultipleOrigins(goNorthWest(getWhitePawns(boards)) &
+                getBlackMaterialToCapture(boards) &
+                isOnRank8() &
+                isNotOnFileH(), SOUTH_EAST, WHITE_QUEEN.getCode());
     }
 
     private static String captureNorthWestEnPassant(Long[] boards) {
-        return createListOfMoves(goNorthWest(whitePawns(boards)) & enPassantMove(boards) & isNotOnRank8() & isNotOnFileH(),
+        return createListOfMovesFromMultipleOrigins(goNorthWest(getWhitePawns(boards)) & getEnPassantMove(boards) & isNotOnRank8() & isNotOnFileH(),
                 SOUTH_EAST,
                 WHITE_PAWN.getCode());
     }
 
+    public static String goOneStepNorth(Long[] boards) {
+        return createListOfMovesFromMultipleOrigins(goNorthToAnEmptySquare(getWhitePawns(boards), getEmptySquares(boards)) & isNotOnRank8(),
+                SOUTH,
+                WHITE_PAWN.getCode());
+    }
+
     static String goOneStepNorthAndPromote(Long[] boards) {
-        return createListOfMoves(goNorthToAnEmptySquare(whitePawns(boards), emptySquares(boards)) & isOnRank8(),
+        return createListOfMovesFromMultipleOrigins(goNorthToAnEmptySquare(getWhitePawns(boards), getEmptySquares(boards)) & isOnRank8(),
                 SOUTH,
                 WHITE_QUEEN.getCode());
+    }
+
+    public static String goTwoStepsNorth(Long[] boards) {
+        return createListOfMovesFromMultipleOrigins(goNorthToAnEmptySquare(goNorthToAnEmptySquare(getWhitePawns(boards), getEmptySquares(boards)),
+                getEmptySquares(boards)) & isOnRank4(), SOUTH_SOUTH, WHITE_PAWN.getCode());
     }
 }

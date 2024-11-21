@@ -90,7 +90,7 @@ public class BitboardFactory {
     public static final  Long[] HORIZONTALS                = createHorizontals();
     public static final  Long[] VERTICALS                  = createVerticals();
     public static final  Long[] PRIMARY_DIAGONALS          = createPrimaryDiagonals();
-    public static final  Long[] SECONDARY_DIAGONALS        = createPrimaryDiagonals();
+    public static final  Long[] SECONDARY_DIAGONALS        = createSecondaryDiagonals();
     private static final int    NUMBER_OF_SQUARES          = 64;
     private static final long   RANK_4                     = getDecimalValueFromBitboard("""
                                                                                          00000000
@@ -111,23 +111,24 @@ public class BitboardFactory {
                                                                                          00000000
                                                                                          00000000""");
 
-    public static long blackMaterialToCapture(Long[] board) {
-        return board[BLACK_MATERIAL_TO_CAPTURE.getIndex()];
-    }
-
     public static String createBitboardFromDecimal(long decimalValue) {
         return createBitboardFromBinaryString(createBinaryStringFromDecimal(decimalValue));
     }
 
     public static String createBitboardFromBinaryString(String binaryString) {
         return IntStream.range(0, binaryString.length())
-                        .mapToObj(index -> binaryString.charAt(index) +
-                                ((index + 1) % FILE_LENGTH == 0 ? NEW_LINE : EMPTY_STRING))
+                        .mapToObj(index -> binaryString.charAt(index) + ((index + 1) % FILE_LENGTH == 0 ? NEW_LINE : EMPTY_STRING))
                         .collect(Collectors.joining());
     }
 
     public static String createBinaryStringFromDecimal(Long decimalValue) {
         return StringUtils.leftPad(Long.toBinaryString(decimalValue), NUMBER_OF_SQUARES, LEADING_ZERO);
+    }
+
+    public static String createBitboardFromIndex(int i) {
+        StringBuilder stringBuilder = new StringBuilder("0".repeat(64));
+        stringBuilder.setCharAt(i, '1');
+        return stringBuilder.toString();
     }
 
     public static Long[] createDecimalsFromBitboards(String[] bitboards) {
@@ -224,12 +225,14 @@ public class BitboardFactory {
         return createBitboardsFromChessboard(INITIAL_BOARD_WHITE_PLAYER);
     }
 
-    public static long emptySquares(Long[] board) {
-        return board[EMPTY_SQUARES.getIndex()];
+    public static long createReversedBoardFromDecimal(long board) {
+        StringBuilder stringBuilder = new StringBuilder(createBinaryStringFromDecimal(board));
+        return getDecimalValueFromBitboard(stringBuilder.reverse()
+                                                        .toString());
     }
 
-    public static long enPassantMove(Long[] board) {
-        return board[EN_PASSANT_MOVE.getIndex()];
+    public static long getBlackMaterialToCapture(Long[] board) {
+        return board[BLACK_MATERIAL_TO_CAPTURE.getIndex()];
     }
 
     public static long getDiagonals(int index) {
@@ -244,6 +247,18 @@ public class BitboardFactory {
         return SECONDARY_DIAGONALS[index % 8 + index / 8];
     }
 
+    public static long getEmptySquares(Long[] board) {
+        return board[EMPTY_SQUARES.getIndex()];
+    }
+
+    public static long getEnPassantMove(Long[] board) {
+        return board[EN_PASSANT_MOVE.getIndex()];
+    }
+
+    public static long getOccupiedSquares(Long[] board) {
+        return ~board[EMPTY_SQUARES.getIndex()];
+    }
+
     public static long getOrthogonals(int index) {
         return getHorizontal(index) | getVertical(index);
     }
@@ -254,6 +269,18 @@ public class BitboardFactory {
 
     private static long getVertical(int index) {
         return VERTICALS[index % 8];
+    }
+
+    public static long getWhiteMaterial(Long[] board) {
+        return board[WHITE_MATERIAL_TO_CAPTURE.getIndex()] | board[WHITE_KING.ordinal()];
+    }
+
+    public static long getWhiteMaterialToCapture(Long[] board) {
+        return board[WHITE_MATERIAL_TO_CAPTURE.getIndex()];
+    }
+
+    public static long getWhitePawns(Long[] board) {
+        return board[WHITE_PAWN.ordinal()];
     }
 
     public static long isNotOnFileA() {
@@ -276,14 +303,6 @@ public class BitboardFactory {
         return RANK_8;
     }
 
-    public static long occupiedSquares(Long[] board) {
-        return ~board[EMPTY_SQUARES.getIndex()];
-    }
-
-    public static long whitePawns(Long[] board) {
-        return board[WHITE_PAWN.ordinal()];
-    }
-
     private static Long[] createHorizontals() {
         return IntStream.range(0, 8)
                         .mapToObj(parentIndex -> getDecimalValueFromBitboard(createRank(parentIndex)))
@@ -297,7 +316,7 @@ public class BitboardFactory {
     }
 
     private static Long[] createPrimaryDiagonals() {
-        return IntStream.range(0, 8)
+        return IntStream.range(0, 15)
                         .mapToObj(parentIndex -> getDecimalValueFromBitboard(createPrimaryDiagonal(parentIndex)))
                         .toArray(Long[]::new);
     }
@@ -315,7 +334,7 @@ public class BitboardFactory {
     }
 
     private static Long[] createSecondaryDiagonals() {
-        return IntStream.range(0, 8)
+        return IntStream.range(0, 15)
                         .mapToObj(parentIndex -> getDecimalValueFromBitboard(createSecondaryDiagonal(parentIndex)))
                         .toArray(Long[]::new);
     }
